@@ -1,8 +1,8 @@
 package com.kunal.poc.kotlin_workspace.adapter.inbound.rest
 
-import com.kunal.poc.kotlin_workspace.domain.model.OrderStatus
 import com.kunal.poc.kotlin_workspace.domain.port.inbound.OrderUseCase
 import com.kunal.poc.kotlin_workspace.dtos.request.TransitionStatusRequest
+import com.kunal.poc.kotlin_workspace.dtos.request.toOrderStatus
 import com.kunal.poc.kotlin_workspace.dtos.response.OrderResponse
 import com.kunal.poc.kotlin_workspace.dtos.response.toResponse
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,20 +18,15 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(private val orderUseCase: OrderUseCase) {
 
     @GetMapping("/{orderId}")
-    fun getOrder(@PathVariable orderId: Long): OrderResponse {
-        TODO("implement")
-    }
+    fun getOrder(@PathVariable orderId: Long): OrderResponse = orderUseCase.getOrder(orderId).toResponse()
 
     @GetMapping
-    fun listOrders(@RequestParam customerId: Long): List<OrderResponse> {
-        TODO("implement")
-    }
+    fun listOrders(@RequestParam customerId: Long): List<OrderResponse> =
+        orderUseCase.listOrders(customerId).map { it.toResponse() }
 
     @PatchMapping("/{orderId}/status")
     fun transition(
         @PathVariable orderId: Long,
         @RequestBody request: TransitionStatusRequest,
-    ): OrderResponse {
-        TODO("implement")
-    }
+    ): OrderResponse = orderUseCase.transition(orderId, request.toOrderStatus()).toResponse()
 }

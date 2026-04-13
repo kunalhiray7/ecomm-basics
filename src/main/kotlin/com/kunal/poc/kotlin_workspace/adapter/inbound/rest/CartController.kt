@@ -1,9 +1,9 @@
 package com.kunal.poc.kotlin_workspace.adapter.inbound.rest
 
-import com.kunal.poc.kotlin_workspace.domain.model.CartItem
 import com.kunal.poc.kotlin_workspace.domain.port.inbound.CartUseCase
 import com.kunal.poc.kotlin_workspace.dtos.request.AddItemRequest
 import com.kunal.poc.kotlin_workspace.dtos.request.UpdateQuantityRequest
+import com.kunal.poc.kotlin_workspace.dtos.request.toCartItem
 import com.kunal.poc.kotlin_workspace.dtos.response.CartResponse
 import com.kunal.poc.kotlin_workspace.dtos.response.OrderResponse
 import com.kunal.poc.kotlin_workspace.dtos.response.toResponse
@@ -25,37 +25,27 @@ class CartController(private val cartUseCase: CartUseCase) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCart(@RequestParam customerId: Long): CartResponse {
-        TODO("implement")
-    }
+    fun createCart(@RequestParam customerId: Long): CartResponse = cartUseCase.createCart(customerId).toResponse()
 
     @GetMapping("/{cartId}")
-    fun getCart(@PathVariable cartId: Long): CartResponse {
-        TODO("implement")
-    }
+    fun getCart(@PathVariable cartId: Long): CartResponse = cartUseCase.getCart(cartId).toResponse()
 
     @PostMapping("/{cartId}/items")
-    fun addItem(@PathVariable cartId: Long, @RequestBody request: AddItemRequest): CartResponse {
-        TODO("implement")
-    }
+    fun addItem(@PathVariable cartId: Long, @RequestBody request: AddItemRequest): CartResponse =
+        cartUseCase.addItem(cartId, request.toCartItem()).toResponse()
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    fun removeItem(@PathVariable cartId: Long, @PathVariable productId: Long): CartResponse {
-        TODO("implement")
-    }
+    fun removeItem(@PathVariable cartId: Long, @PathVariable productId: Long): CartResponse =
+        cartUseCase.removeItem(cartId, productId).toResponse()
 
     @PatchMapping("/{cartId}/items/{productId}")
     fun updateQuantity(
         @PathVariable cartId: Long,
         @PathVariable productId: Long,
         @RequestBody request: UpdateQuantityRequest,
-    ): CartResponse {
-        TODO("implement")
-    }
+    ): CartResponse = cartUseCase.updateQuantity(cartId, productId, request.quantity).toResponse()
 
     @PostMapping("/{cartId}/checkout")
     @ResponseStatus(HttpStatus.CREATED)
-    fun checkout(@PathVariable cartId: Long): OrderResponse {
-        TODO("implement")
-    }
+    fun checkout(@PathVariable cartId: Long): OrderResponse = cartUseCase.checkout(cartId).toResponse()
 }
