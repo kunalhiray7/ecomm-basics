@@ -9,15 +9,9 @@ class OrderPersistenceAdapter(
     private val jpaRepository: OrderJpaRepository,
 ) : OrderRepository {
 
-    override fun findById(id: Long): Order? {
-        TODO("implement")
-    }
+    override fun findById(id: Long): Order?  = jpaRepository.findById(id).map { it.toDomain() }.orElse(null)
 
-    override fun findByCustomerId(customerId: Long): List<Order> {
-        TODO("implement")
-    }
+    override fun findByCustomerId(customerId: Long): List<Order> = jpaRepository.findByCustomerId(customerId).map { it.toDomain() }
 
-    override fun save(order: Order): Order {
-        TODO("implement")
-    }
+    override fun save(order: Order): Order = jpaRepository.save(order.toEntity()).toDomain()
 }
