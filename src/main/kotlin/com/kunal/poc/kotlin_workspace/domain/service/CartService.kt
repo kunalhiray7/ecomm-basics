@@ -1,5 +1,6 @@
 package com.kunal.poc.kotlin_workspace.domain.service
 
+import com.kunal.poc.kotlin_workspace.domain.exception.CartNotFoundException
 import com.kunal.poc.kotlin_workspace.domain.model.Cart
 import com.kunal.poc.kotlin_workspace.domain.model.CartItem
 import com.kunal.poc.kotlin_workspace.domain.model.Order
@@ -12,27 +13,19 @@ class CartService(
     private val orderRepository: OrderRepository,
 ) : CartUseCase {
 
-    override fun createCart(customerId: Long): Cart {
-        TODO("implement")
-    }
+    override fun createCart(customerId: Long): Cart = cartRepository.save(Cart(customerId = customerId))
 
-    override fun getCart(cartId: Long): Cart {
-        TODO("implement")
-    }
+    override fun getCart(cartId: Long): Cart = cartRepository.findById(cartId) ?: throw CartNotFoundException(cartId)
 
-    override fun addItem(cartId: Long, item: CartItem): Cart {
-        TODO("implement")
-    }
+    override fun addItem(cartId: Long, item: CartItem): Cart =
+        getCart(cartId).addItem(item).let { cartRepository.save(it) }
 
-    override fun removeItem(cartId: Long, productId: Long): Cart {
-        TODO("implement")
-    }
+    override fun removeItem(cartId: Long, productId: Long): Cart =
+        getCart(cartId).removeItem(productId).let { cartRepository.save(it) }
 
-    override fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Cart {
-        TODO("implement")
-    }
+    override fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Cart =
+        getCart(cartId).updateQuantity(productId, quantity).let { cartRepository.save(it) }
 
-    override fun checkout(cartId: Long): Order {
-        TODO("implement")
-    }
+    override fun checkout(cartId: Long): Order =
+        getCart(cartId).checkout().let { orderRepository.save(it) }
 }
